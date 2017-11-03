@@ -83,7 +83,7 @@ DcRollingFileStream.prototype.shouldRoll = function() {
 	}
 	
 	var lastFileTime = findLastFileTimeIfExists();
-	if (fs.statSync(this.filePath).size > 0 && (new Date()).getTime() > (lastFileTime.getTime() + ROLL_INTERVAL)) {
+	if (fs.statSync(this.filePath) && fs.statSync(this.filePath).size > 0 && (new Date()).getTime() > (lastFileTime.getTime() + ROLL_INTERVAL)) {
 		return true;
 	}
 	return false;

@@ -9,7 +9,7 @@ var ROLL_INTERVAL = 1000 * 60 * 5;
 
 module.exports = DcRollingFileStream;
 
-function DcRollingFileStream(filePath, options) {
+function DcRollingFileStream(filePath, options, rollMilisec) {
 	if (!filePath) {
 		throw new Error('You must specify a filePath');
 	}
@@ -18,6 +18,7 @@ function DcRollingFileStream(filePath, options) {
 	this.options.encoding = this.options.encoding || 'utf8';
 	this.options.mode = this.options.mode || parseInt('0644', 8);
 	this.options.flags = this.options.flags || 'a';	
+	this.rollMilisec = this.rollMilisec || ROLL_INTERVAL;
 	this.now = new Date();;
 	DcRollingFileStream.super_.call(this);
 	this.openTheStream();
@@ -48,7 +49,6 @@ DcRollingFileStream.prototype._write = function(chunk, encoding, callback) {
 
 DcRollingFileStream.prototype.openTheStream = function(callback) {	
 	var that = this;
-	
 	this.theStream = fs.createWriteStream(this.filePath, this.options);
 	this.theStream.on('error', function(err) {
 		that.emit('error', err);
@@ -83,7 +83,7 @@ DcRollingFileStream.prototype.shouldRoll = function() {
 	}
 	
 	var lastFileTime = findLastFileTimeIfExists();
-	if (fs.statSync(this.filePath) && fs.statSync(this.filePath).size > 0 && (new Date()).getTime() > (lastFileTime.getTime() + ROLL_INTERVAL)) {
+	if (fs.existsSync(this.filePath) && fs.statSync(this.filePath).size > 0 && (new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec)) {
 		return true;
 	}
 	return false;

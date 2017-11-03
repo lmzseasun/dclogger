@@ -169,41 +169,74 @@ function testTokenConsume() {
 }
 
 function testAsyncBatch() {
-	
 	var interval1 = setInterval(function(){
 		var dcLogger = new DcLogger('12345');
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
 	var interval2 = setInterval(function(){
 		var dcLogger = new DcLogger('12345');
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
 	var interval3 = setInterval(function(){
 		var dcLogger = new DcLogger('12345');
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
 	var interval4 = setInterval(function(){
 		var dcLogger = new DcLogger('12345');
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
-		dcLogger.onRoleLogin(createRandomRoleInfo());
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval5 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval6 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval7 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval8 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval9 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
+	}, 1);
+	
+	var interval10 = setInterval(function(){
+		var dcLogger = new DcLogger('12345');
+		var roleInfo = createRandomRoleInfo();
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
 	setTimeout(function() {
@@ -211,8 +244,15 @@ function testAsyncBatch() {
 		clearInterval(interval2);
 		clearInterval(interval3);
 		clearInterval(interval4);
-	}, 1000 * 60 * 30);
+		clearInterval(interval5);
+		clearInterval(interval6);
+		clearInterval(interval7);
+		clearInterval(interval8);
+		clearInterval(interval9);
+		clearInterval(interval10);
+	}, 1000 * 60 * 5);
 }
+
 
 testRoleLogin();
 testRoleLogout();

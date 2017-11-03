@@ -1,0 +1,19 @@
+{
+  "name": "dclogger",
+  "version": "1.0.0",
+  "description": "Nodejs logger module",
+  "main": "./dclogger.js",
+  "keywords": [
+    "jslogger"
+  ],
+  "author": "lvmingzhao@kingsoft.com",
+  "dependencies": {
+  	"mkdirp": "^0.5.1",
+	"date-format": "^1.1.0",
+	"readable-stream": "^2.3.0",
+	"node-uuid": "^1.4.7"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  }
+}

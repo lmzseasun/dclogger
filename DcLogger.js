@@ -13,6 +13,7 @@ module.exports = DcLogger;
 function DcLogger(appId, dataRoot) {
 	this.appId = appId;
 	this.dataRoot = dataRoot || '/data/dclogger';
+	this.dateUuid = {};
 	if (!this.appId) {
 		throw new Error("appId must be not empty");
 	}
@@ -22,10 +23,25 @@ function DcLogger(appId, dataRoot) {
 }
 
 DcLogger.prototype.createBlankLogMsg = function() {
-	return {
-		//==== client info, need for all types======
+	return {		 
+		 // ==== role info, need for all types======
+		 accountId: '',			//账号ID
+		 roleId: '',			//角色ID
+		 roleName: '',			//角色名
+		 roleType: '',			//角色类型,如法师，道士，战士
+		 roleLevel: '',			//角色等级
+		 roleVipLevel: '', 		//角色vip等级
+		 zone: '',				//游戏区ID
+		 zoneName: '',			//游戏区名称
 		 channel: '',			//渠道ID
 		 channelDesc: '',		//渠道描述
+		 server: '',			//游戏服ID,示例:s1,s2
+		 serverName: '',		//游戏服名称,示例:风云争霸
+		 partyId: '',			//公会ID
+		 gender: '',			//角色性别
+		 battleScore: '',		//战斗力
+		 
+		 //==== client info, need only for role.login======
 		 deviceId: '',			//设备ID			
 		 os: '',				//操作系统:android/iso等
 		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
@@ -46,21 +62,6 @@ DcLogger.prototype.createBlankLogMsg = function() {
 		 iccid: '',				//iccid
 		 imsi: '',				//imsi
 		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
-		 
-		 // ==== role info, need for all types======
-		 accountId: '',			//账号ID
-		 roleId: '',			//角色ID
-		 roleName: '',			//角色名
-		 roleType: '',			//角色类型,如法师，道士，战士
-		 roleLevel: '',			//角色等级
-		 roleVipLevel: '', 		//角色vip等级
-		 zone: '',				//游戏区ID
-		 zoneName: '',			//游戏区名称
-		 server: '',			//游戏服ID,示例:s1,s2
-		 serverName: '',		//游戏服名称,示例:风云争霸
-		 partyId: '',			//公会ID
-		 gender: '',			//角色性别
-		 battleScore: '',		//战斗力
 		
 		 // ==== recharge info, need for recharge message===
 		 currency: '',			//"CNY", "KER", "HKD", "USD", "VND", "THB", "PHP"等币种标识
@@ -120,8 +121,6 @@ DcLogger.prototype.createBlankLogMsg = function() {
  * @param loginInfo
  * 
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
 		 deviceId: '',			//设备ID			
 		 os: '',				//操作系统:android/iso等
 		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
@@ -150,6 +149,8 @@ DcLogger.prototype.createBlankLogMsg = function() {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -171,28 +172,6 @@ DcLogger.prototype.onRoleLogin = function(loginInfo) {
  * 
  * @param logoutInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -200,7 +179,9 @@ DcLogger.prototype.onRoleLogin = function(loginInfo) {
 		 roleLevel: '',			//角色等级
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
-		 zoneName: '',			//游戏区名称
+		 zoneName: '',			//游戏区名称		 
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -221,28 +202,6 @@ DcLogger.prototype.onRoleLogout = function(logoutInfo) {
  * 
  * @param rechargeInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -251,6 +210,8 @@ DcLogger.prototype.onRoleLogout = function(logoutInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -275,28 +236,6 @@ DcLogger.prototype.onRoleRecharge = function(rechargeInfo) {
  * 
  * @param virtualCurrencyPurchaseInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -304,7 +243,9 @@ DcLogger.prototype.onRoleRecharge = function(rechargeInfo) {
 		 roleLevel: '',			//角色等级
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
-		 zoneName: '',			//游戏区名称
+		 zoneName: '',			//游戏区名称		 
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -328,28 +269,6 @@ DcLogger.prototype.onVirtualCurrencyPurchase = function(virtualCurrencyPurchaseI
  * 
  * @param virtualCurrencyRewardInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -358,6 +277,8 @@ DcLogger.prototype.onVirtualCurrencyPurchase = function(virtualCurrencyPurchaseI
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -384,28 +305,6 @@ DcLogger.prototype.onVirtualCurrencyReward = function(virtualCurrencyRewardInfo)
  * 
  * @param virtualCurrencyConsumeInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -414,6 +313,8 @@ DcLogger.prototype.onVirtualCurrencyReward = function(virtualCurrencyRewardInfo)
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -442,28 +343,6 @@ DcLogger.prototype.onVirtualCurrencyConsume = function(virtualCurrencyConsumeInf
  * 
  * @param tokenPurchaseInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -472,6 +351,8 @@ DcLogger.prototype.onVirtualCurrencyConsume = function(virtualCurrencyConsumeInf
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -497,28 +378,6 @@ DcLogger.prototype.onTokenPurchase = function(tokenPurchaseInfo) {
  * 
  * @param tokenRewardInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -527,6 +386,8 @@ DcLogger.prototype.onTokenPurchase = function(tokenPurchaseInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -555,28 +416,6 @@ DcLogger.prototype.onTokenReward = function(tokenRewardInfo) {
  * 
  * @param tokenConsumeInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -585,6 +424,8 @@ DcLogger.prototype.onTokenReward = function(tokenRewardInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -614,28 +455,6 @@ DcLogger.prototype.onTokenConsume = function(tokenConsumeInfo) {
  * 
  * @param roleLevelUpInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -644,6 +463,8 @@ DcLogger.prototype.onTokenConsume = function(tokenConsumeInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -664,28 +485,6 @@ DcLogger.prototype.onRoleLeveUp = function(roleLevelUpInfo) {
  * 
  * @param missionInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -694,6 +493,8 @@ DcLogger.prototype.onRoleLeveUp = function(roleLevelUpInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -718,28 +519,6 @@ DcLogger.prototype.onMissionBegin = function(missionInfo) {
  * 
  * @param missionInfo
   {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -748,6 +527,8 @@ DcLogger.prototype.onMissionBegin = function(missionInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -772,28 +553,6 @@ DcLogger.prototype.onMissionFail = function(missionInfo) {
  * 
  * @param missionInfo
   {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -802,6 +561,8 @@ DcLogger.prototype.onMissionFail = function(missionInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -826,28 +587,6 @@ DcLogger.prototype.onMissionSuccess = function(missionInfo) {
  * 
  * @param missionRewardInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -856,6 +595,8 @@ DcLogger.prototype.onMissionSuccess = function(missionInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -886,28 +627,6 @@ DcLogger.prototype.onMissionReward = function(missionRewardInfo) {
  * 
  * @param tradeInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -916,6 +635,8 @@ DcLogger.prototype.onMissionReward = function(missionRewardInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -945,28 +666,6 @@ DcLogger.prototype.onRoleTrade = function(tradeInfo) {
  * 
  * @param powerConsumeInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -975,6 +674,8 @@ DcLogger.prototype.onRoleTrade = function(tradeInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -1002,28 +703,6 @@ DcLogger.prototype.onPowerConsume = function(powerConsumeInfo) {
  * 
  * @param customEventInfo
  {
-		 channel: '',			//渠道ID
-		 channelDesc: '',		//渠道描述
-		 deviceId: '',			//设备ID			
-		 os: '',				//操作系统:android/iso等
-		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
-		 nework: '',			//网络类型
-		 clientIp: '',			//客户端IP地址
-		 appVersion: '',		//应用自身版本号，如1.3.1,对应andriod:versionName
-		 appVersionCode: '',	//应用自身版本号，如1,对应andriod:versionCode
-		 sdkVersion: '',		//渠道sdk的版本
-		 deviceBrand: '',		//设备提供商： 小米、华为、三星、苹果
-		 deviceModel: '',		//设备型号：小米note、华为meta7 iphone 6 plus等
-		 deviceScreen: '',		//设备屏幕大小: 1024*920
-		 mac: '',				//mac地址
-		 imei: '',				//Android设备编号（android独有
-		 uuid: '',				//UUID,用于唯一标示某台设备（android独有）
-		 packageName: '',		//应用的包名（android独有）
-		 buildNumber: '',		//BuildNumber（android独有）
-		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -1032,6 +711,8 @@ DcLogger.prototype.onPowerConsume = function(powerConsumeInfo) {
 		 roleVipLevel: '', 		//角色vip等级
 		 zone: '',				//游戏区ID
 		 zoneName: '',			//游戏区名称
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
 		 server: '',			//游戏服ID,示例:s1,s2
 		 serverName: '',		//游戏服名称,示例:风云争霸
 		 partyId: '',			//公会ID
@@ -1053,6 +734,8 @@ DcLogger.prototype.onCustomEvent = function(customEventInfo) {
 DcLogger.prototype._applyCommonInfo = function(logInfo) {
 	if (logInfo) {
 		logInfo.msgId = uuid.v1();
+		logInfo.msgVersion = '3.0.0';
+		logInfo.xgDataVersion = 'dclogger_node_1.0.0';
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
 		logInfo.stime = logInfo.stime || new Date();
@@ -1070,22 +753,19 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 
 DcLogger.prototype._log = function(logInfo) {
 	if (logInfo && logInfo.stime) {
-		var subDir = this.dataRoot + '/' + format(DAY_FORMAT, logInfo.stime) + '/' + this.appId;
+		var dateStr = format(DAY_FORMAT, logInfo.stime); 
+		
+		var subDir = this.dataRoot + '/' + dateStr + '/' + this.appId;
 		mkdirp.sync(subDir);
 		
 		var that = this;
 		function findBaseFileNameIfExists() {
-			var files = fs.readdirSync(subDir);
-			var filesToProcess = files.filter(function(item){
-				if (item.match('^dclogger-[^_]*.log')) {
-					return true;
-				}
-			});
-			if (filesToProcess.length > 0) {
-				return filesToProcess[0];
-			} else {
-				return 'dclogger-' + uuid.v4() + '.log';
+			var uuidStr = that.dateUuid[dateStr];
+			if (!uuidStr) {
+				uuidStr = uuid.v4();
+				that.dateUuid[dateStr] = uuidStr;
 			}
+			return 'dclogger-' + uuidStr + '.log';
 		}
 		
 		function replacer(key, value) {

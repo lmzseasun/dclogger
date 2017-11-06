@@ -25,6 +25,7 @@ function DcLogger(appId, dataRoot) {
 DcLogger.prototype.createBlankLogMsg = function() {
 	return {		 
 		 // ==== role info, need for all types======
+		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -121,6 +122,7 @@ DcLogger.prototype.createBlankLogMsg = function() {
  * @param loginInfo
  * 
  {
+ 		 stime: '',				//服务器时间
 		 deviceId: '',			//设备ID			
 		 os: '',				//操作系统:android/iso等
 		 osVersion: '',			//操作系统版本号：ios 6.1.3、android 4.3等
@@ -202,6 +204,7 @@ DcLogger.prototype.onRoleLogout = function(logoutInfo) {
  * 
  * @param rechargeInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -236,6 +239,7 @@ DcLogger.prototype.onRoleRecharge = function(rechargeInfo) {
  * 
  * @param virtualCurrencyPurchaseInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -269,6 +273,7 @@ DcLogger.prototype.onVirtualCurrencyPurchase = function(virtualCurrencyPurchaseI
  * 
  * @param virtualCurrencyRewardInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -305,6 +310,7 @@ DcLogger.prototype.onVirtualCurrencyReward = function(virtualCurrencyRewardInfo)
  * 
  * @param virtualCurrencyConsumeInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -343,6 +349,7 @@ DcLogger.prototype.onVirtualCurrencyConsume = function(virtualCurrencyConsumeInf
  * 
  * @param tokenPurchaseInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -378,6 +385,7 @@ DcLogger.prototype.onTokenPurchase = function(tokenPurchaseInfo) {
  * 
  * @param tokenRewardInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -416,6 +424,7 @@ DcLogger.prototype.onTokenReward = function(tokenRewardInfo) {
  * 
  * @param tokenConsumeInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -455,6 +464,7 @@ DcLogger.prototype.onTokenConsume = function(tokenConsumeInfo) {
  * 
  * @param roleLevelUpInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -485,6 +495,7 @@ DcLogger.prototype.onRoleLeveUp = function(roleLevelUpInfo) {
  * 
  * @param missionInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -519,6 +530,7 @@ DcLogger.prototype.onMissionBegin = function(missionInfo) {
  * 
  * @param missionInfo
   {
+  		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -553,6 +565,7 @@ DcLogger.prototype.onMissionFail = function(missionInfo) {
  * 
  * @param missionInfo
   {
+  		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -587,6 +600,7 @@ DcLogger.prototype.onMissionSuccess = function(missionInfo) {
  * 
  * @param missionRewardInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -627,6 +641,7 @@ DcLogger.prototype.onMissionReward = function(missionRewardInfo) {
  * 
  * @param tradeInfo
  {
+		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -666,6 +681,7 @@ DcLogger.prototype.onRoleTrade = function(tradeInfo) {
  * 
  * @param powerConsumeInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -703,6 +719,7 @@ DcLogger.prototype.onPowerConsume = function(powerConsumeInfo) {
  * 
  * @param customEventInfo
  {
+ 		 stime: '',				//服务器时间
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名

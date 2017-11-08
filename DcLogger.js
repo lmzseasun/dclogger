@@ -10,9 +10,9 @@ var EOL = os.EOL || '\n';
 
 module.exports = DcLogger;
 
-function DcLogger(appId, dataRoot) {
+function DcLogger(appId) {
 	this.appId = appId;
-	this.dataRoot = dataRoot || '/data/dclogger';
+	this.dataRoot = '/data/dclogger';
 	this.dateUuid = {};
 	if (!this.appId) {
 		throw new Error("appId must be not empty");
@@ -20,6 +20,21 @@ function DcLogger(appId, dataRoot) {
 	if (!this.dataRoot) {
 		throw new Error("dataRoot must be not empty");
 	}
+	
+	function getServerIp() {
+		var addresses = [];
+		var interfaces = os.networkInterfaces();
+		for (var k in interfaces) {
+			for (var k2 in interfaces[k]) {
+		        var address = interfaces[k][k2];
+		        if (address.family === 'IPv4' && !address.internal) {
+		        	addresses.push(address.address);
+		        }
+		    }
+		}
+		return addresses.length > 0 ? addresses[0] : '';
+	};
+	this.serverIp = getServerIp();
 }
 
 DcLogger.prototype.createBlankLogMsg = function() {
@@ -60,8 +75,8 @@ DcLogger.prototype.createBlankLogMsg = function() {
 		 packageName: '',		//应用的包名（android独有）
 		 buildNumber: '',		//BuildNumber（android独有）
 		 carrier: '',			//运营商：中国移动，中国联通等
-		 iccid: '',				//iccid
-		 imsi: '',				//imsi
+		 iccid: '',				//ICCID：Integrate circuit card identity 集成电路卡识别码即SIM卡卡号，相当于手机号码的身份证。
+		 imsi: '',				//国际移动用户识别码（IMSI：International Mobile Subscriber Identification Number）
 		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
 		
 		 // ==== recharge info, need for recharge message===
@@ -748,13 +763,15 @@ DcLogger.prototype.onCustomEvent = function(customEventInfo) {
 	}
 };
 
-DcLogger.prototype._applyCommonInfo = function(logInfo) {
+DcLogger.prototype._applyCommonInfo = function(logInfo) {	
 	if (logInfo) {
 		logInfo.msgId = uuid.v1();
 		logInfo.msgVersion = '3.0.0';
-		logInfo.xgDataVersion = 'dclogger_node_1.0.0';
+		logInfo.dataSdkVersion = '1.0.0';
+		logInfo.dataSdkLanguage = 'java';
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
+		logInfo.serverIp = this.serverIp;
 		logInfo.stime = logInfo.stime || new Date();
 		logInfo.timestamp = logInfo.stime|| new Date();
 		

@@ -2,10 +2,14 @@
   "name": "dclogger",
   "version": "1.0.0",
   "description": "Nodejs logger module",
-  "main": "./dclogger.js",
+  "main": "./Dclogger.js",
   "keywords": [
     "jslogger"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmzseasun/dclogger.git"
+  },
   "author": "lvmingzhao@kingsoft.com",
   "dependencies": {
   	"mkdirp": "^0.5.1",

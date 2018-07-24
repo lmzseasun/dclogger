@@ -4,7 +4,7 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var stream = require('readable-stream');
 var format = require('date-format');
-var LOG_ROLL_PATTERN = 'yyyyMMddhhmmss';
+var LOG_ROLL_PATTERN = 'yyyy-MM-dd_hhmmss';
 var ROLL_INTERVAL = 1000 * 60 * 5;
 
 module.exports = DcRollingFileStream;

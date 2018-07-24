@@ -78,6 +78,7 @@ DcLogger.prototype.createBlankLogMsg = function() {
 		 iccid: '',				//ICCID：Integrate circuit card identity 集成电路卡识别码即SIM卡卡号，相当于手机号码的身份证。
 		 imsi: '',				//国际移动用户识别码（IMSI：International Mobile Subscriber Identification Number）
 		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
+		 pxgkschannel:'',		//标识用户来源，用于广告链接买量
 		
 		 // ==== recharge info, need for recharge message===
 		 currency: '',			//"CNY", "KER", "HKD", "USD", "VND", "THB", "PHP"等币种标识

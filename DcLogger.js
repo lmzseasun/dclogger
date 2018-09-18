@@ -725,7 +725,7 @@ DcLogger.prototype.onRoleTrade = function(tradeInfo) {
  */
 DcLogger.prototype.onPowerConsume = function(powerConsumeInfo) {
 	if (powerConsumeInfo) {
-		powerConsumeInfo.msgType = 'role.recharge';
+		powerConsumeInfo.msgType = 'power.consume';
 		this._log(this._applyCommonInfo(powerConsumeInfo));
 	}
 };

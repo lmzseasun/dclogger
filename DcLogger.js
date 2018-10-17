@@ -762,7 +762,7 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 	if (logInfo) {
 		logInfo.msgId = uuid.v1();
 		logInfo.msgVersion = '3.0.0';
-		logInfo.dataSdkVersion = '1.0.0';
+		logInfo.dataSdkVersion = '1.1.0';
 		logInfo.dataSdkLanguage = 'nodejs';
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
@@ -783,34 +783,5 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 DcLogger.prototype._log = function(logInfo) {
 	if (logInfo && logInfo.stime) {
 		this.dcRollingFileStream.write(logInfo);
-		
-		/*
-		var dateStr = format(DAY_FORMAT, logInfo.stime); 
-		
-		var subDir = this.dataRoot + '/' + dateStr + '/' + this.appId;
-		mkdirp.sync(subDir);
-		
-		var that = this;
-		function findBaseFileNameIfExists() {
-			var uuidStr = that.dateUuid[dateStr];
-			if (!uuidStr) {
-				uuidStr = uuid.v4();
-				that.dateUuid[dateStr] = uuidStr;
-			}
-			return 'dclogger_nodejs.' + dateStr + '_000000' + '_' + that.appId + '_' + uuidStr + '.log';
-		}
-		
-		function replacer(key, value) {
-			if (typeof value === 'string' && (value === '' || value === null)) {
-				return undefined;
-			}
-			return value;
-		}
-		
-		var logPath = subDir + '/' + findBaseFileNameIfExists(); 
-		var stream = new DcRollingFileStream(logPath);
-		stream.write(JSON.stringify(logInfo, replacer) + EOL);
-		stream.end();
-		*/
 	}
 };

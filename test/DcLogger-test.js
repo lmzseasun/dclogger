@@ -175,7 +175,7 @@ function testAsyncBatch() {
 		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
-	var interval = setInterval(function(){
+	var interval2 = setInterval(function(){
 		var roleInfo = createRandomRoleInfo();
 		dcLogger.onRoleLogin(roleInfo);
 		dcLogger.onRoleLogout(roleInfo);

@@ -9,6 +9,7 @@ var format = require('date-format');
 var LOG_ROLL_PATTERN = 'yyyy-MM-dd_hhmmss';
 var DAY_FORMAT = 'yyyy-MM-dd';
 var ROLL_INTERVAL = 1000 * 60 * 5;
+var ROLL_SIZE = 40 * 1024 * 1024;
 var EOL = os.EOL || '\n';
 
 module.exports = DcRollingFileStream;
@@ -18,13 +19,14 @@ function DcRollingFileStream(appId, options) {
 		throw new Error('You must specify a appId');
 	}
 	this.appId = appId;
-	this.options = options || {};
+	var options = options || {};
 	this.fileOptions = {};
-	this.fileOptions.encoding = this.options.encoding || 'utf8';
-	this.fileOptions.mode = this.options.mode || parseInt('0644', 8);
-	this.fileOptions.flags = this.options.flags || 'a';	
-	this.rollMilisec = this.options.rollMilisec || ROLL_INTERVAL;
-	this.dataRoot = this.options.dataRoot || '/data/dclogger';
+	this.fileOptions.encoding = options.encoding || 'utf8';
+	this.fileOptions.mode = options.mode || parseInt('0644', 8);
+	this.fileOptions.flags = options.flags || 'a';	
+	this.rollMilisec = options.rollMilisec || ROLL_INTERVAL;
+	this.rollSize = options.rollSize || ROLL_SIZE;
+	this.dataRoot = options.dataRoot || '/data/dclogger';
 	this.dateUuid = {};
 	this.openTheStream();
 };

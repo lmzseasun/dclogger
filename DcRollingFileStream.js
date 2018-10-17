@@ -65,9 +65,10 @@ DcRollingFileStream.prototype.closeTheStream = function(callback) {
 DcRollingFileStream.prototype.shouldRoll = function() {
 	var that = this;
 	var fileNameObject = path.parse(this.filePath);
+	var uuid = fileNameObject.name.split('_')[3];
 	
 	function justTheseFiles(item) {
-		return item.startsWith(fileNameObject.name + '_');
+		return item.endsWith(uuid + fileNameObject.ext);
 	}
 	
 	function findLastFileTimeIfExists() {
@@ -83,7 +84,7 @@ DcRollingFileStream.prototype.shouldRoll = function() {
 	}
 	
 	var lastFileTime = findLastFileTimeIfExists();
-	if (fs.existsSync(this.filePath) && fs.statSync(this.filePath).size > 0 && (new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec)) {
+	if (fs.existsSync(this.filePath) && fs.statSync(this.filePath).size > 0 && ((new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec) || fs.statSync(this.filePath).size > 20 * 1024 * 1024)) {
 		return true;
 	}
 	return false;
@@ -91,9 +92,11 @@ DcRollingFileStream.prototype.shouldRoll = function() {
 
 DcRollingFileStream.prototype.roll = function(filePath, callback) {
 	var that = this;
-	var filePost = format.asString(LOG_ROLL_PATTERN, new Date());
+	var timeString = format.asString(LOG_ROLL_PATTERN, new Date());
 	var fileNameObject = path.parse(this.filePath);
-	var rollFileName = path.join(fileNameObject.dir, fileNameObject.name + '_' + filePost + fileNameObject.ext);
+	var nameArray = fileNameObject.name.split('_');
+	
+	var rollFileName = path.join(fileNameObject.dir, 'dclogger_nodejs.' + timeString + '_' + nameArray[3] + '_' + nameArray[4] + fileNameObject.ext);
 	
 	this.closeTheStream(deleteAnyExistingFile.bind(null, 
 		renameTheCurrentFile.bind(null,

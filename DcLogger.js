@@ -769,7 +769,7 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 		logInfo.msgId = uuid.v1();
 		logInfo.msgVersion = '3.0.0';
 		logInfo.dataSdkVersion = '1.0.0';
-		logInfo.dataSdkLanguage = 'java';
+		logInfo.dataSdkLanguage = 'nodejs';
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
 		logInfo.serverIp = this.serverIp;
@@ -800,7 +800,7 @@ DcLogger.prototype._log = function(logInfo) {
 				uuidStr = uuid.v4();
 				that.dateUuid[dateStr] = uuidStr;
 			}
-			return 'dclogger-' + uuidStr + '.log';
+			return 'dclogger_nodejs.' + dateStr + '_000000' + '_' + that.appId + '_' + uuidStr + '.log';
 		}
 		
 		function replacer(key, value) {

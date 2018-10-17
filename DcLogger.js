@@ -3,7 +3,7 @@ var uuid = require('node-uuid');
 var DcRollingFileStream = require('./DcRollingFileStream');
 
 var format = require('date-format');
-var TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss.SSS';
+var TIMESTAMP_FORMAT = 'yyyy-MM-dd hh:mm:ss.SSS';
 
 module.exports = DcLogger;
 
@@ -34,7 +34,7 @@ function DcLogger(appId) {
 DcLogger.prototype.createBlankLogMsg = function() {
 	return {		 
 		 // ==== role info, need for all types======
-		 stime: '',				//服务器时间
+		 stime: '',				//服务器时间,格式1539783963358
 		 accountId: '',			//账号ID
 		 roleId: '',			//角色ID
 		 roleName: '',			//角色名
@@ -767,15 +767,8 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
 		logInfo.serverIp = this.serverIp;
-		logInfo.stime = logInfo.stime || new Date();
-		logInfo.timestamp = logInfo.stime|| new Date();
-		
-		logInfo.stime.toJSON = function() {
-			return logInfo.stime.getTime();
-		};
-		logInfo.timestamp.toJSON = function() {
-			return format(TIMESTAMP_FORMAT, logInfo.timestamp);
-		};
+		logInfo.timestamp = format(TIMESTAMP_FORMAT, new Date());
+		logInfo.stime = logInfo.stime || (new Date()).getTime();
 	}
 	return logInfo;
 };

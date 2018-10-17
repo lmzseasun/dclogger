@@ -1,25 +1,19 @@
-var fs = require('fs');
 var os = require('os');
-var mkdirp = require('mkdirp');
 var uuid = require('node-uuid');
 var DcRollingFileStream = require('./DcRollingFileStream');
 
 var format = require('date-format');
-var DAY_FORMAT = 'yyyy-MM-dd';
-var EOL = os.EOL || '\n';
+var TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss.SSS';
 
 module.exports = DcLogger;
 
 function DcLogger(appId) {
 	this.appId = appId;
-	this.dataRoot = '/data/dclogger';
 	this.dateUuid = {};
 	if (!this.appId) {
 		throw new Error("appId must be not empty");
 	}
-	if (!this.dataRoot) {
-		throw new Error("dataRoot must be not empty");
-	}
+	this.dcRollingFileStream = new DcRollingFileStream(this.appId);
 	
 	function getServerIp() {
 		var addresses = [];
@@ -77,7 +71,7 @@ DcLogger.prototype.createBlankLogMsg = function() {
 		 carrier: '',			//运营商：中国移动，中国联通等
 		 iccid: '',				//ICCID：Integrate circuit card identity 集成电路卡识别码即SIM卡卡号，相当于手机号码的身份证。
 		 imsi: '',				//国际移动用户识别码（IMSI：International Mobile Subscriber Identification Number）
-		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）
+		 idfa: '',				//广告标示符（iOS版本在进行AppStore商店推广时才需要采集）		 
 		 pxgkschannel:'',		//标识用户来源，用于广告链接买量
 		
 		 // ==== recharge info, need for recharge message===
@@ -780,7 +774,7 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 			return logInfo.stime.getTime();
 		};
 		logInfo.timestamp.toJSON = function() {
-			return logInfo.timestamp.getTime();
+			return format(TIMESTAMP_FORMAT, logInfo.timestamp);
 		};
 	}
 	return logInfo;
@@ -788,6 +782,9 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 
 DcLogger.prototype._log = function(logInfo) {
 	if (logInfo && logInfo.stime) {
+		this.dcRollingFileStream.write(logInfo);
+		
+		/*
 		var dateStr = format(DAY_FORMAT, logInfo.stime); 
 		
 		var subDir = this.dataRoot + '/' + dateStr + '/' + this.appId;
@@ -814,5 +811,6 @@ DcLogger.prototype._log = function(logInfo) {
 		var stream = new DcRollingFileStream(logPath);
 		stream.write(JSON.stringify(logInfo, replacer) + EOL);
 		stream.end();
+		*/
 	}
 };

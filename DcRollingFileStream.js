@@ -1,128 +1,115 @@
 var fs = require('fs');
+var os = require('os');
+var uuid = require('node-uuid');
 var util = require('util');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var stream = require('readable-stream');
 var format = require('date-format');
 var LOG_ROLL_PATTERN = 'yyyy-MM-dd_hhmmss';
+var DAY_FORMAT = 'yyyy-MM-dd';
 var ROLL_INTERVAL = 1000 * 60 * 5;
+var EOL = os.EOL || '\n';
 
 module.exports = DcRollingFileStream;
 
-function DcRollingFileStream(filePath, options, rollMilisec) {
-	if (!filePath) {
-		throw new Error('You must specify a filePath');
+function DcRollingFileStream(appId, options) {
+	if (!appId) {
+		throw new Error('You must specify a appId');
 	}
-	this.filePath = filePath;
+	this.appId = appId;
 	this.options = options || {};
-	this.options.encoding = this.options.encoding || 'utf8';
-	this.options.mode = this.options.mode || parseInt('0644', 8);
-	this.options.flags = this.options.flags || 'a';	
-	this.rollMilisec = this.rollMilisec || ROLL_INTERVAL;
-	this.now = new Date();;
-	DcRollingFileStream.super_.call(this);
+	this.fileOptions = {};
+	this.fileOptions.encoding = this.options.encoding || 'utf8';
+	this.fileOptions.mode = this.options.mode || parseInt('0644', 8);
+	this.fileOptions.flags = this.options.flags || 'a';	
+	this.rollMilisec = this.options.rollMilisec || ROLL_INTERVAL;
+	this.dataRoot = this.options.dataRoot || '/data/dclogger';
+	this.dateUuid = {};
 	this.openTheStream();
-}
-util.inherits(DcRollingFileStream, stream.Writable);
-
-DcRollingFileStream.prototype._writeTheChunk = function(chunk, encoding, callback) {
-	try {
-		if (!this.theStream.write(chunk, encoding)) {
-			this.theStream.once('drain',callback);
-		} else {
-			process.nextTick(callback);
-		}
-	} catch (err) {
-		if (callback) {
-			callback(err);
-		}
-	}
 };
 
-DcRollingFileStream.prototype._write = function(chunk, encoding, callback) {
-	if (this.shouldRoll()) {
-		this.roll(this.filePath, this._writeTheChunk.bind(this, chunk, encoding, callback));
-	} else {
-		this._writeTheChunk(chunk, encoding, callback);
-	}
-};
-
-DcRollingFileStream.prototype.openTheStream = function(callback) {	
-	var that = this;
-	this.theStream = fs.createWriteStream(this.filePath, this.options);
-	this.theStream.on('error', function(err) {
-		that.emit('error', err);
-	});
+DcRollingFileStream.prototype.openTheStream = function(callback) {
+	var now = new Date();
+	var logDateString = format(DAY_FORMAT, now);	
+	mkdirp.sync(this.dataRoot);
+	var subDir = this.dataRoot + '/' + logDateString + '/' + this.appId;
+	mkdirp.sync(subDir);
+	var fileName = this._getRollingFileName(now);
+	this.theStream = fs.createWriteStream(subDir + '/' + fileName, this.fileOptions);
 	if (callback) {
 		this.theStream.on("open", callback);
 	}
 };
 
-DcRollingFileStream.prototype.closeTheStream = function(callback) {
-	this.theStream.end(callback);
+DcRollingFileStream.prototype.write = function(logInfo) {
+	function replacer(key, value) {
+		if (typeof value === 'string' && (value === '' || value === null)) {
+			return undefined;
+		}
+		return value;
+	}
+	
+	var that = this;
+	var chunk = JSON.stringify(logInfo, replacer) + EOL;
+	if (this.shouldRoll()) {
+		this.theStream.end(this.openTheStream( () => {
+			that.openTheStream(() => {
+				that.write(logInfo);
+			});
+		}));
+	} else {		
+		this.theStream.write(chunk, this.fileOptions.encoding);
+	}
+};
+
+DcRollingFileStream.prototype._getRollingFileName = function(time) {
+	var that = this;
+	var dateStr = format(DAY_FORMAT, time);
+	function findUuidIfExists() {
+		var uuidStr = that.dateUuid[dateStr];
+		if (!uuidStr) {
+			uuidStr = uuid.v4();
+			that.dateUuid[dateStr] = uuidStr;
+		}
+		return uuidStr;
+	}
+	var logFileTimeString = format.asString(LOG_ROLL_PATTERN, time);
+	var uuidStr = findUuidIfExists();
+	return 'dclogger_nodejs.' + logFileTimeString + '_' + this.appId + '_' + uuidStr + '.log';
 };
 
 DcRollingFileStream.prototype.shouldRoll = function() {
 	var that = this;
-	var fileNameObject = path.parse(this.filePath);
-	var uuid = fileNameObject.name.split('_')[3];
+	var logDateString = format(DAY_FORMAT, new Date());
+	var fileNameObject = path.parse(this.theStream.path);
+	var fileNameArray = fileNameObject.name.split('_');
+	var uuid = fileNameArray[4];
+	var fileDateString = fileNameArray[1].replace('nodejs.', '');
 	
 	function justTheseFiles(item) {
 		return item.endsWith(uuid + fileNameObject.ext);
 	}
 	
 	function findLastFileTimeIfExists() {
-		var files = fs.readdirSync(path.dirname(that.filePath));
+		var files = fs.readdirSync(fileNameObject.dir);
 		var filesToProcess = files.filter(justTheseFiles).sort();
-		if (filesToProcess.length > 0) {
+		if (filesToProcess.length > 1) {
 			return fs.statSync(path.join(fileNameObject.dir, filesToProcess[filesToProcess.length - 1])).mtime;
-		} else if (fs.existsSync(that.filePath)){
-			return fs.statSync(that.filePath).birthtime;
+		} else if (fs.existsSync(that.theStream.path)){
+			return fs.statSync(that.theStream.path).birthtime;
 		} else {
 			return that.now;
 		}
 	}
 	
-	var lastFileTime = findLastFileTimeIfExists();
-	if (fs.existsSync(this.filePath) && fs.statSync(this.filePath).size > 0 && ((new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec) || fs.statSync(this.filePath).size > 20 * 1024 * 1024)) {
+	if (logDateString === fileDateString) {
+		var lastFileTime = findLastFileTimeIfExists();
+		if (fs.existsSync(this.theStream.path) && fs.statSync(this.theStream.path).size > 0 && ((new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec) || fs.statSync(this.theStream.path).size > 20 * 1024 * 1024)) {
+			return true;
+		}
+		return false;
+	} else {
 		return true;
 	}
-	return false;
-};
-
-DcRollingFileStream.prototype.roll = function(filePath, callback) {
-	var that = this;
-	var timeString = format.asString(LOG_ROLL_PATTERN, new Date());
-	var fileNameObject = path.parse(this.filePath);
-	var nameArray = fileNameObject.name.split('_');
-	
-	var rollFileName = path.join(fileNameObject.dir, 'dclogger_nodejs.' + timeString + '_' + nameArray[3] + '_' + nameArray[4] + fileNameObject.ext);
-	
-	this.closeTheStream(deleteAnyExistingFile.bind(null, 
-		renameTheCurrentFile.bind(null,
-			this.openTheStream.bind(this, callback))));
-	
-	function deleteAnyExistingFile(cb) {
-	    //on windows, you can get a EEXIST error if you rename a file to an existing file
-	    //so, we'll try to delete the file we're renaming to first
-	    fs.unlink(rollFileName, function (err) {
-	    	//ignore err: if we could not delete, it's most likely that it doesn't exist
-	    	cb();
-	    });
-	}
-	
-	function renameTheCurrentFile(cb) {
-	    fs.rename(filePath, rollFileName, cb);
-	}
-};
-
-DcRollingFileStream.prototype.end = function(chunk, encoding, callback) {
-	var self = this;
-	stream.Writable.prototype.end.call(self, function() {
-	    self.theStream.end(chunk, encoding, function(err) {
-	    	if (callback) {
-	    		callback(err);
-	    	}
-	    });
-    });
 };

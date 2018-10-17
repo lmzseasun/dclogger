@@ -169,43 +169,34 @@ function testTokenConsume() {
 }
 
 function testAsyncBatch() {
-	var dcLogger1 = new DcLogger('12345');
 	var interval1 = setInterval(function(){
 		var roleInfo = createRandomRoleInfo();
-		dcLogger1.onRoleLogin(roleInfo);
-		dcLogger1.onRoleLogout(roleInfo);
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
-	var dcLogger2 = new DcLogger('12345');
-	var interval2 = setInterval(function(){
-		var dcLogger = new DcLogger('12345');
+	var interval = setInterval(function(){
 		var roleInfo = createRandomRoleInfo();
-		dcLogger2.onRoleLogin(roleInfo);
-		dcLogger2.onRoleLogout(roleInfo);
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
-	var dcLogger3 = new DcLogger('12345');
 	var interval3 = setInterval(function(){
-		var dcLogger = new DcLogger('12345');
 		var roleInfo = createRandomRoleInfo();
-		dcLogger3.onRoleLogin(roleInfo);
-		dcLogger3.onRoleLogout(roleInfo);
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
-	var dcLogger4 = new DcLogger('12345');
 	var interval4 = setInterval(function(){
-		var dcLogger = new DcLogger('12345');
 		var roleInfo = createRandomRoleInfo();
-		dcLogger4.onRoleLogin(roleInfo);
-		dcLogger4.onRoleLogout(roleInfo);
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
-	var dcLogger5 = new DcLogger('12345');
 	var interval5 = setInterval(function(){
-		var dcLogger = new DcLogger('12345');
 		var roleInfo = createRandomRoleInfo();
-		dcLogger5.onRoleLogin(roleInfo);
-		dcLogger5.onRoleLogout(roleInfo);
+		dcLogger.onRoleLogin(roleInfo);
+		dcLogger.onRoleLogout(roleInfo);
 	}, 1);
 	
 	var interval6 = setInterval(function(){
@@ -268,4 +259,4 @@ testVirtualCurrencyConsume();
 testTokenPurchase();
 testTokenReward();
 testTokenConsume();
-//testAsyncBatch();
+testAsyncBatch();

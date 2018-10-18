@@ -82,32 +82,35 @@ DcRollingFileStream.prototype._getRollingFileName = function(time) {
 };
 
 DcRollingFileStream.prototype.shouldRoll = function() {
-	var that = this;
 	var logDateString = format(DAY_FORMAT, new Date());
 	var fileNameObject = path.parse(this.theStream.path);
 	var fileNameArray = fileNameObject.name.split('_');
 	var uuid = fileNameArray[4];
 	var fileDateString = fileNameArray[1].replace('nodejs.', '');
+	var streamFileExist = fs.existsSync(this.theStream.path);
+	var streamFileStat = streamFileExist ? fs.statSync(this.theStream.path) : {};	
 	
 	function justTheseFiles(item) {
 		return item.endsWith(uuid + fileNameObject.ext);
 	}
 	
 	function findLastFileTimeIfExists() {
-		var files = fs.readdirSync(fileNameObject.dir);
-		var filesToProcess = files.filter(justTheseFiles).sort();
-		if (filesToProcess.length > 1) {
-			return fs.statSync(path.join(fileNameObject.dir, filesToProcess[filesToProcess.length - 1])).mtime;
-		} else if (fs.existsSync(that.theStream.path)){
-			return fs.statSync(that.theStream.path).birthtime;
+		if (streamFileExist) {
+			return streamFileStat.birthtime;
 		} else {
-			return that.now;
+			var files = fs.readdirSync(fileNameObject.dir);
+			var filesToProcess = files.filter(justTheseFiles).sort();
+			if (filesToProcess.length > 0) {
+				return fs.statSync(path.join(fileNameObject.dir, filesToProcess[filesToProcess.length - 1])).mtime;
+			} else {
+				return new Date();
+			}
 		}
 	}
 	
 	if (logDateString === fileDateString) {
 		var lastFileTime = findLastFileTimeIfExists();
-		if (fs.existsSync(this.theStream.path) && fs.statSync(this.theStream.path).size > 0 && ((new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec) || fs.statSync(this.theStream.path).size > 20 * 1024 * 1024)) {
+		if (streamFileExist && streamFileStat.size > 0 && ((new Date()).getTime() > (lastFileTime.getTime() + this.rollMilisec) || streamFileStat.size > this.rollSize)) {
 			return true;
 		}
 		return false;

@@ -28,7 +28,17 @@ function DcLogger(appId) {
 		}
 		return addresses.length > 0 ? addresses[0] : '';
 	};
+	
+	function getTimezone() {
+		function z(n) { return (n < 10 ? '0' : '') + n; };
+		var offset = new Date().getTimezoneOffset();
+		var sign = offset < 0? 'GMT+' : 'GMT-';
+		offset = Math.abs(offset);
+		return sign + z(offset/60 | 0) + z(offset%60);
+	};
+	
 	this.serverIp = getServerIp();
+	this.timeZone = getTimezone();
 }
 
 DcLogger.prototype.createBlankLogMsg = function() {
@@ -767,6 +777,7 @@ DcLogger.prototype._applyCommonInfo = function(logInfo) {
 		logInfo.datasource = "server";
 		logInfo.appId = this.appId;
 		logInfo.serverIp = this.serverIp;
+		logInfo.time_zone = this.timeZone;
 		logInfo.timestamp = format(TIMESTAMP_FORMAT, new Date());
 		logInfo.stime = logInfo.stime || (new Date()).getTime();
 	}

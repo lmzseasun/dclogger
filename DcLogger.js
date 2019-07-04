@@ -569,7 +569,7 @@ DcLogger.prototype.onMissionBegin = function(missionInfo) {
 		 missionId: '',			//missionID
 		 missionName: '',		//mission名称
 		 missionType: ''		//mission类型：如活动，关卡，任务等
-		 missionDuration: '		//mission耗时（单位：秒）
+		 missionDuration: ''	//mission耗时（单位：秒）
 	}
  * 
  */
@@ -605,7 +605,7 @@ DcLogger.prototype.onMissionFail = function(missionInfo) {
 		 missionId: '',			//missionID
 		 missionName: '',		//mission名称
 		 missionType: ''		//mission类型：如活动，关卡，任务等
-		 missionDuration: '		//mission耗时（单位：秒）
+		 missionDuration: ''	//mission耗时（单位：秒）
 	}
  * 
  */

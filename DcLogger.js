@@ -220,6 +220,36 @@ DcLogger.prototype.onRoleLogout = function(logoutInfo) {
 };
 
 /**
+ * 玩家心跳登录开始每5分钟上报一次在线情况
+ * 
+ * @param roleInfo
+ {
+		 accountId: '',			//账号ID
+		 roleId: '',			//角色ID
+		 roleName: '',			//角色名
+		 roleType: '',			//角色类型,如法师，道士，战士
+		 roleLevel: '',			//角色等级
+		 roleVipLevel: '', 		//角色vip等级
+		 zone: '',				//游戏区ID
+		 zoneName: '',			//游戏区名称		 
+		 channel: '',			//渠道ID
+		 channelDesc: '',		//渠道描述
+		 server: '',			//游戏服ID,示例:s1,s2
+		 serverName: '',		//游戏服名称,示例:风云争霸
+		 partyId: '',			//公会ID
+		 gender: '',			//角色性别
+		 battleScore: ''		//战斗力
+	}
+ * 
+ */
+DcLogger.prototype.onRoleHeartbeat = function(roleInfo) {
+	if (roleInfo) {
+		roleInfo.msgType = 'device.heartbeat';
+		this._log(this._applyCommonInfo(roleInfo));
+	}
+};
+
+/**
  * 玩家充值成功时调用
  * 
  * @param rechargeInfo
